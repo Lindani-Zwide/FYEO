@@ -1,0 +1,1036 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Gentlemen's Companion</title>
+    <meta name="description" content="Admin dashboard for managing escort profiles, user accounts, and site content.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/echarts/5.4.3/echarts.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-dark: #1a1a1a;
+            --secondary-gold: #d4af37;
+            --accent-burgundy: #722f37;
+            --neutral-cream: #f8f6f0;
+            --soft-gray: #8a8a8a;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: var(--neutral-cream);
+            line-height: 1.6;
+        }
+        
+        .font-display { font-family: 'Playfair Display', serif; }
+        .font-accent { font-family: 'Crimson Text', serif; }
+        
+        .glass-nav {
+            backdrop-filter: blur(20px);
+            background: rgba(26, 26, 26, 0.9);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .sidebar {
+            background: rgba(26, 26, 26, 0.95);
+            backdrop-filter: blur(10px);
+            border-right: 1px solid rgba(212, 175, 55, 0.2);
+            height: calc(100vh - 64px);
+            overflow-y: auto;
+        }
+        
+        .main-content {
+            height: calc(100vh - 64px);
+            overflow-y: auto;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary-gold), #b8941f);
+            color: var(--primary-dark);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #b8941f, var(--secondary-gold));
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+        }
+        
+        .btn-secondary {
+            border: 2px solid var(--secondary-gold);
+            color: var(--secondary-gold);
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--secondary-gold);
+            color: var(--primary-dark);
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #dc2626, #b91c1c);
+            color: white;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #b91c1c, #dc2626);
+            transform: translateY(-2px);
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, var(--secondary-gold), var(--accent-burgundy));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-card {
+            background: rgba(45, 45, 45, 0.8);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            border-color: var(--secondary-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.1);
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+            border-radius: 8px;
+            margin: 0.25rem 0;
+        }
+        
+        .nav-link:hover {
+            background: rgba(212, 175, 55, 0.1);
+            color: var(--secondary-gold);
+        }
+        
+        .nav-link.active {
+            background: rgba(212, 175, 55, 0.2);
+            color: var(--secondary-gold);
+            border-left: 3px solid var(--secondary-gold);
+        }
+        
+        .table-container {
+            background: rgba(45, 45, 45, 0.8);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .table-header {
+            background: rgba(212, 175, 55, 0.1);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .table-row {
+            border-bottom: 1px solid rgba(212, 175, 55, 0.1);
+            transition: background-color 0.3s ease;
+        }
+        
+        .table-row:hover {
+            background: rgba(212, 175, 55, 0.05);
+        }
+        
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .status-active {
+            background: rgba(34, 197, 94, 0.2);
+            color: #22c55e;
+            border: 1px solid rgba(34, 197, 94, 0.3);
+        }
+        
+        .status-pending {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+        
+        .status-suspended {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+        
+        .chart-container {
+            background: rgba(45, 45, 45, 0.8);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 12px;
+            padding: 1.5rem;
+        }
+        
+        .mobile-menu {
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .search-input {
+            background: rgba(45, 45, 45, 0.8);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: var(--neutral-cream);
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            border-color: var(--secondary-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+            outline: none;
+        }
+        
+        .filter-dropdown {
+            background: rgba(45, 45, 45, 0.8);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: var(--neutral-cream);
+        }
+        
+        .notification-badge {
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: absolute;
+            top: -8px;
+            right: -8px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="glass-nav fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0">
+                    <a href="index.html" class="font-display text-2xl font-bold text-gradient">Gentlemen's Companion</a>
+                </div>
+                
+                <!-- User Info -->
+                <div class="hidden md:flex items-center space-x-4">
+                    <div class="text-right">
+                        <p class="text-sm font-medium text-white">Admin User</p>
+                        <p class="text-xs text-gray-400">Administrator</p>
+                    </div>
+                    <button class="btn-secondary px-4 py-2 rounded-lg text-sm font-semibold" onclick="logout()">
+                        Logout
+                    </button>
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobileMenuBtn" class="text-gray-300 hover:text-yellow-500 focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Layout -->
+    <div class="pt-16 flex">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 fixed left-0 top-16 z-40 hidden md:block">
+            <div class="p-6">
+                <nav class="space-y-2">
+                    <a href="#" class="nav-link active block px-4 py-3 text-sm font-medium text-gray-300" onclick="showSection('dashboard')">
+                        <span class="flex items-center">
+                            <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M2 10a8 8 0 018-8v8h8a8 8 0 11-16 0z"></path>
+                                <path d="M12 2.252A8.014 8.014 0 0117.748 8H12V2.252z"></path>
+                            </svg>
+                            Dashboard
+                        </span>
+                    </a>
+                    
+                    <a href="#" class="nav-link block px-4 py-3 text-sm font-medium text-gray-300" onclick="showSection('users')">
+                        <span class="flex items-center relative">
+                            <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                            </svg>
+                            Users
+                            <span class="notification-badge ml-2">3</span>
+                        </span>
+                    </a>
+                    
+                    <a href="#" class="nav-link block px-4 py-3 text-sm font-medium text-gray-300" onclick="showSection('profiles')">
+                        <span class="flex items-center relative">
+                            <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                            </svg>
+                            Escort Profiles
+                            <span class="notification-badge ml-2">5</span>
+                        </span>
+                    </a>
+                    
+                    <a href="#" class="nav-link block px-4 py-3 text-sm font-medium text-gray-300" onclick="showSection('content')">
+                        <span class="flex items-center">
+                            <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                            </svg>
+                            Content Moderation
+                        </span>
+                    </a>
+                    
+                    <a href="#" class="nav-link block px-4 py-3 text-sm font-medium text-gray-300" onclick="showSection('payments')">
+                        <span class="flex items-center">
+                            <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zM14 6a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2h6zM4 14a2 2 0 002 2h8a2 2 0 002-2v-2H4v2z"></path>
+                            </svg>
+                            Payments
+                        </span>
+                    </a>
+                    
+                    <a href="#" class="nav-link block px-4 py-3 text-sm font-medium text-gray-300" onclick="showSection('analytics')">
+                        <span class="flex items-center">
+                            <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                            </svg>
+                            Analytics
+                        </span>
+                    </a>
+                    
+                    <a href="#" class="nav-link block px-4 py-3 text-sm font-medium text-gray-300" onclick="showSection('settings')">
+                        <span class="flex items-center">
+                            <svg class="w-5 h-5 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path>
+                            </svg>
+                            Settings
+                        </span>
+                    </a>
+                </nav>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content flex-1 ml-0 md:ml-64">
+            <div class="p-6">
+                <!-- Dashboard Section -->
+                <div id="dashboard" class="content-section active">
+                    <div class="mb-8">
+                        <h1 class="font-display text-3xl font-bold text-gradient mb-2">Dashboard Overview</h1>
+                        <p class="text-gray-300">Welcome back! Here's what's happening with your platform today.</p>
+                    </div>
+                    
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                        <div class="stat-card p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-400">Total Users</p>
+                                    <p class="text-3xl font-bold text-gradient">1,247</p>
+                                </div>
+                                <div class="w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-yellow-500" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center text-sm">
+                                <span class="text-green-500">↗ 12%</span>
+                                <span class="text-gray-400 ml-2">from last month</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-400">Active Escorts</p>
+                                    <p class="text-3xl font-bold text-gradient">89</p>
+                                </div>
+                                <div class="w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-green-500" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center text-sm">
+                                <span class="text-green-500">↗ 8%</span>
+                                <span class="text-gray-400 ml-2">from last month</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-400">Total Revenue</p>
+                                    <p class="text-3xl font-bold text-gradient">R45,230</p>
+                                </div>
+                                <div class="w-12 h-12 bg-red-500/20 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-red-500" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zM14 6a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2V8a2 2 0 012-2h6zM4 14a2 2 0 002 2h8a2 2 0 002-2v-2H4v2z"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center text-sm">
+                                <span class="text-green-500">↗ 23%</span>
+                                <span class="text-gray-400 ml-2">from last month</span>
+                            </div>
+                        </div>
+                        
+                        <div class="stat-card p-6">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-sm font-medium text-gray-400">Pending Reviews</p>
+                                    <p class="text-3xl font-bold text-gradient">12</p>
+                                </div>
+                                <div class="w-12 h-12 bg-orange-500/20 rounded-lg flex items-center justify-center">
+                                    <svg class="w-6 h-6 text-orange-500" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
+                                    </svg>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex items-center text-sm">
+                                <span class="text-red-500">↗ 5</span>
+                                <span class="text-gray-400 ml-2">new today</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Charts Row -->
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                        <div class="chart-container">
+                            <h3 class="font-display text-xl font-semibold mb-4 text-white">Revenue Overview</h3>
+                            <div id="revenueChart" style="height: 300px;"></div>
+                        </div>
+                        
+                        <div class="chart-container">
+                            <h3 class="font-display text-xl font-semibold mb-4 text-white">User Growth</h3>
+                            <div id="userGrowthChart" style="height: 300px;"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Activity -->
+                    <div class="table-container">
+                        <div class="table-header p-4">
+                            <h3 class="font-display text-xl font-semibold text-white">Recent Activity</h3>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-800/50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">User</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Action</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Details</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-700">
+                                    <tr class="table-row">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-white">Sarah M.</td>
+                                            <div class="text-sm text-gray-400">Client</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="text-sm text-gray-300">Viewed Profile</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="text-sm text-gray-300">Marcus - Stellenbosch</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">2 minutes ago</td>
+                                    </tr>
+                                    <tr class="table-row">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-white">Marcus</td>
+                                            <div class="text-sm text-gray-400">Companion</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="text-sm text-gray-300">Updated Profile</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="text-sm text-gray-300">Updated photos</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">15 minutes ago</td>
+                                    </tr>
+                                    <tr class="table-row">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-white">Jennifer K.</td>
+                                            <div class="text-sm text-gray-400">Client</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="text-sm text-gray-300">Sent Message</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="text-sm text-gray-300">To Thabo - Kayamandi</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">1 hour ago</td>
+                                    </tr>
+                                    <tr class="table-row">
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <div class="text-sm font-medium text-white">Thabo</td>
+                                            <div class="text-sm text-gray-400">Companion</div>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="text-sm text-gray-300">New Registration</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span class="text-sm text-gray-300">Premium membership</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">3 hours ago</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Section -->
+                <div id="users" class="content-section">
+                    <div class="mb-8">
+                        <h1 class="font-display text-3xl font-bold text-gradient mb-2">User Management</h1>
+                        <p class="text-gray-300">Manage all platform users including clients and companions.</p>
+                    </div>
+                    
+                    <!-- Search and Filters -->
+                    <div class="flex flex-col md:flex-row gap-4 mb-6">
+                        <div class="flex-1">
+                            <input type="text" placeholder="Search users..." class="search-input w-full px-4 py-3 rounded-lg" id="userSearch">
+                        </div>
+                        <select class="filter-dropdown px-4 py-3 rounded-lg" id="userTypeFilter">
+                            <option value="">All Users</option>
+                            <option value="client">Clients</option>
+                            <option value="escort">Companions</option>
+                            <option value="admin">Administrators</option>
+                        </select>
+                        <select class="filter-dropdown px-4 py-3 rounded-lg" id="userStatusFilter">
+                            <option value="">All Status</option>
+                            <option value="active">Active</option>
+                            <option value="pending">Pending</option>
+                            <option value="suspended">Suspended</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Users Table -->
+                    <div class="table-container">
+                        <div class="table-header p-4 flex justify-between items-center">
+                            <h3 class="font-display text-xl font-semibold text-white">All Users</h3>
+                            <button class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold" onclick="exportUsers()">
+                                Export CSV
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-800/50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">User</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Type</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Location</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Joined</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-700" id="usersTableBody">
+                                    <!-- Users will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profiles Section -->
+                <div id="profiles" class="content-section">
+                    <div class="mb-8">
+                        <h1 class="font-display text-3xl font-bold text-gradient mb-2">Escort Profile Management</h1>
+                        <p class="text-gray-300">Review and manage companion profiles and content.</p>
+                    </div>
+                    
+                    <!-- Search and Filters -->
+                    <div class="flex flex-col md:flex-row gap-4 mb-6">
+                        <div class="flex-1">
+                            <input type="text" placeholder="Search profiles..." class="search-input w-full px-4 py-3 rounded-lg" id="profileSearch">
+                        </div>
+                        <select class="filter-dropdown px-4 py-3 rounded-lg" id="profileStatusFilter">
+                            <option value="">All Status</option>
+                            <option value="verified">Verified</option>
+                            <option value="pending">Pending Review</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                        <select class="filter-dropdown px-4 py-3 rounded-lg" id="profileLocationFilter">
+                            <option value="">All Locations</option>
+                            <option value="stellenbosch">Stellenbosch</option>
+                            <option value="kayamandi">Kayamandi</option>
+                            <option value="thubelitsha">Thubelitsha</option>
+                            <option value="kayelitsha">Kayelitsha</option>
+                            <option value="delft">Delft</option>
+                            <option value="blue-downs">Blue Downs</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Profiles Table -->
+                    <div class="table-container">
+                        <div class="table-header p-4 flex justify-between items-center">
+                            <h3 class="font-display text-xl font-semibold text-white">Escort Profiles</h3>
+                            <div class="flex space-x-2">
+                                <button class="btn-primary px-4 py-2 rounded-lg text-sm font-semibold" onclick="bulkApprove()">
+                                    Bulk Approve
+                                </button>
+                                <button class="btn-secondary px-4 py-2 rounded-lg text-sm font-semibold" onclick="exportProfiles()">
+                                    Export CSV
+                                </button>
+                            </div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="bg-gray-800/50">
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                                            <input type="checkbox" id="selectAllProfiles" class="rounded">
+                                        </th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Profile</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Location</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Rate</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Joined</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-700" id="profilesTableBody">
+                                    <!-- Profiles will be populated by JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Other sections would go here -->
+                <div id="content" class="content-section">
+                    <div class="text-center py-20">
+                        <h2 class="font-display text-2xl font-bold text-gradient mb-4">Content Moderation</h2>
+                        <p class="text-gray-300">Content moderation tools coming soon...</p>
+                    </div>
+                </div>
+                
+                <div id="payments" class="content-section">
+                    <div class="text-center py-20">
+                        <h2 class="font-display text-2xl font-bold text-gradient mb-4">Payment Management</h2>
+                        <p class="text-gray-300">Payment management tools coming soon...</p>
+                    </div>
+                </div>
+                
+                <div id="analytics" class="content-section">
+                    <div class="text-center py-20">
+                        <h2 class="font-display text-2xl font-bold text-gradient mb-4">Analytics & Reports</h2>
+                        <p class="text-gray-300">Advanced analytics coming soon...</p>
+                    </div>
+                </div>
+                
+                <div id="settings" class="content-section">
+                    <div class="text-center py-20">
+                        <h2 class="font-display text-2xl font-bold text-gradient mb-4">Platform Settings</h2>
+                        <p class="text-gray-300">Settings management coming soon...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        const sampleUsers = [
+            { id: 1, name: 'Sarah M.', email: 'sarah@test.com', type: 'client', status: 'active', location: 'Stellenbosch', joined: '2025-01-15', lastActive: '2 minutes ago' },
+            { id: 2, name: 'Marcus', email: 'marcus@test.com', type: 'escort', status: 'active', location: 'Stellenbosch', joined: '2024-12-01', lastActive: '15 minutes ago' },
+            { id: 3, name: 'Jennifer K.', email: 'jennifer@test.com', type: 'client', status: 'active', location: 'Kayamandi', joined: '2025-01-10', lastActive: '1 hour ago' },
+            { id: 4, name: 'Thabo', email: 'thabo@test.com', type: 'escort', status: 'pending', location: 'Kayamandi', joined: '2025-01-20', lastActive: '3 hours ago' },
+            { id: 5, name: 'Admin User', email: 'admin@test.com', type: 'admin', status: 'active', location: 'Cape Town', joined: '2024-01-01', lastActive: 'Now' }
+        ];
+
+        const sampleProfiles = [
+            { id: 1, name: 'Marcus', status: 'verified', location: 'Stellenbosch', rate: 1200, joined: '2024-12-01', rating: 4.9, reviews: 23 },
+            { id: 2, name: 'Thabo', status: 'pending', location: 'Kayamandi', rate: 800, joined: '2025-01-20', rating: 0, reviews: 0 },
+            { id: 3, name: 'James', status: 'verified', location: 'Stellenbosch', rate: 1500, joined: '2024-11-15', rating: 4.8, reviews: 31 },
+            { id: 4, name: 'Lungelo', status: 'verified', location: 'Kayelitsha', rate: 700, joined: '2024-10-20', rating: 4.7, reviews: 15 },
+            { id: 5, name: 'David', status: 'rejected', location: 'Delft', rate: 1000, joined: '2025-01-05', rating: 0, reviews: 0 }
+        ];
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeDashboard();
+            loadUsersTable();
+            loadProfilesTable();
+            initializeCharts();
+        });
+
+        function initializeDashboard() {
+            // Check if user is logged in
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const userType = localStorage.getItem('userType');
+            
+            if (!isLoggedIn || userType !== 'admin') {
+                alert('Access denied. Please login as administrator.');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            // Update admin info
+            const userName = localStorage.getItem('userName') || 'Admin User';
+            document.querySelector('.text-sm.font-medium.text-white').textContent = userName;
+        }
+
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.content-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.closest('.nav-link').classList.add('active');
+            
+            // Close mobile menu if open
+            document.getElementById('mobileMenu').classList.remove('active');
+        }
+
+        function loadUsersTable() {
+            const tbody = document.getElementById('usersTableBody');
+            tbody.innerHTML = '';
+            
+            sampleUsers.forEach(user => {
+                const row = document.createElement('tr');
+                row.className = 'table-row';
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-white">${user.name}</div>
+                        <div class="text-sm text-gray-400">${user.email}</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="text-sm text-gray-300 capitalize">${user.type}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="status-badge status-${user.status}">${user.status}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${user.location}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">${user.joined}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2">
+                            <button class="text-yellow-500 hover:text-yellow-400" onclick="viewUser(${user.id})">View</button>
+                            <button class="text-blue-500 hover:text-blue-400" onclick="editUser(${user.id})">Edit</button>
+                            ${user.status === 'active' ? 
+                                `<button class="text-red-500 hover:text-red-400" onclick="suspendUser(${user.id})">Suspend</button>` :
+                                `<button class="text-green-500 hover:text-green-400" onclick="activateUser(${user.id})">Activate</button>`
+                            }
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function loadProfilesTable() {
+            const tbody = document.getElementById('profilesTableBody');
+            tbody.innerHTML = '';
+            
+            sampleProfiles.forEach(profile => {
+                const row = document.createElement('tr');
+                row.className = 'table-row';
+                row.innerHTML = `
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <input type="checkbox" class="profile-checkbox rounded" value="${profile.id}">
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="text-sm font-medium text-white">${profile.name}</div>
+                        <div class="text-sm text-gray-400">★ ${profile.rating} (${profile.reviews} reviews)</div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <span class="status-badge status-${profile.status === 'verified' ? 'active' : profile.status}">${profile.status}</span>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">${profile.location}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-300">R${profile.rate}/hr</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">${profile.joined}</td>
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                        <div class="flex space-x-2">
+                            <button class="text-yellow-500 hover:text-yellow-400" onclick="viewProfile(${profile.id})">View</button>
+                            ${profile.status === 'pending' ? 
+                                `<button class="text-green-500 hover:text-green-400" onclick="approveProfile(${profile.id})">Approve</button>` :
+                                `<button class="text-blue-500 hover:text-blue-400" onclick="editProfile(${profile.id})">Edit</button>`
+                            }
+                            <button class="text-red-500 hover:text-red-400" onclick="deleteProfile(${profile.id})">Delete</button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function initializeCharts() {
+            // Revenue Chart
+            const revenueChart = echarts.init(document.getElementById('revenueChart'));
+            const revenueOption = {
+                backgroundColor: 'transparent',
+                textStyle: {
+                    color: '#f8f6f0'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(45, 45, 45, 0.9)',
+                    borderColor: '#d4af37',
+                    textStyle: {
+                        color: '#f8f6f0'
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    axisLine: {
+                        lineStyle: {
+                            color: '#8a8a8a'
+                        }
+                    },
+                    axisLabel: {
+                        color: '#8a8a8a'
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLine: {
+                        lineStyle: {
+                            color: '#8a8a8a'
+                        }
+                    },
+                    axisLabel: {
+                        color: '#8a8a8a'
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: 'rgba(138, 138, 138, 0.2)'
+                        }
+                    }
+                },
+                series: [{
+                    data: [12000, 19000, 15000, 25000, 22000, 30000],
+                    type: 'line',
+                    smooth: true,
+                    lineStyle: {
+                        color: '#d4af37',
+                        width: 3
+                    },
+                    itemStyle: {
+                        color: '#d4af37'
+                    },
+                    areaStyle: {
+                        color: {
+                            type: 'linear',
+                            x: 0,
+                            y: 0,
+                            x2: 0,
+                            y2: 1,
+                            colorStops: [{
+                                offset: 0, color: 'rgba(212, 175, 55, 0.3)'
+                            }, {
+                                offset: 1, color: 'rgba(212, 175, 55, 0.05)'
+                            }]
+                        }
+                    }
+                }]
+            };
+            revenueChart.setOption(revenueOption);
+            
+            // User Growth Chart
+            const userGrowthChart = echarts.init(document.getElementById('userGrowthChart'));
+            const userGrowthOption = {
+                backgroundColor: 'transparent',
+                textStyle: {
+                    color: '#f8f6f0'
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    backgroundColor: 'rgba(45, 45, 45, 0.9)',
+                    borderColor: '#722f37',
+                    textStyle: {
+                        color: '#f8f6f0'
+                    }
+                },
+                legend: {
+                    data: ['Clients', 'Companions'],
+                    textStyle: {
+                        color: '#f8f6f0'
+                    }
+                },
+                xAxis: {
+                    type: 'category',
+                    data: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    axisLine: {
+                        lineStyle: {
+                            color: '#8a8a8a'
+                        }
+                    },
+                    axisLabel: {
+                        color: '#8a8a8a'
+                    }
+                },
+                yAxis: {
+                    type: 'value',
+                    axisLine: {
+                        lineStyle: {
+                            color: '#8a8a8a'
+                        }
+                    },
+                    axisLabel: {
+                        color: '#8a8a8a'
+                    },
+                    splitLine: {
+                        lineStyle: {
+                            color: 'rgba(138, 138, 138, 0.2)'
+                        }
+                    }
+                },
+                series: [
+                    {
+                        name: 'Clients',
+                        data: [120, 150, 180, 220, 280, 350],
+                        type: 'bar',
+                        itemStyle: {
+                            color: '#d4af37'
+                        }
+                    },
+                    {
+                        name: 'Companions',
+                        data: [8, 12, 15, 18, 22, 28],
+                        type: 'bar',
+                        itemStyle: {
+                            color: '#722f37'
+                        }
+                    }
+                ]
+            };
+            userGrowthChart.setOption(userGrowthOption);
+            
+            // Make charts responsive
+            window.addEventListener('resize', function() {
+                revenueChart.resize();
+                userGrowthChart.resize();
+            });
+        }
+
+        // Action functions
+        function viewUser(userId) {
+            alert(`Viewing user details for ID: ${userId}`);
+        }
+
+        function editUser(userId) {
+            alert(`Opening edit form for user ID: ${userId}`);
+        }
+
+        function suspendUser(userId) {
+            if (confirm('Are you sure you want to suspend this user?')) {
+                alert(`User ${userId} has been suspended.`);
+                // Update UI
+                loadUsersTable();
+            }
+        }
+
+        function activateUser(userId) {
+            if (confirm('Are you sure you want to activate this user?')) {
+                alert(`User ${userId} has been activated.`);
+                // Update UI
+                loadUsersTable();
+            }
+        }
+
+        function viewProfile(profileId) {
+            alert(`Viewing profile details for ID: ${profileId}`);
+        }
+
+        function editProfile(profileId) {
+            alert(`Opening edit form for profile ID: ${profileId}`);
+        }
+
+        function approveProfile(profileId) {
+            if (confirm('Are you sure you want to approve this profile?')) {
+                alert(`Profile ${profileId} has been approved.`);
+                // Update UI
+                loadProfilesTable();
+            }
+        }
+
+        function deleteProfile(profileId) {
+            if (confirm('Are you sure you want to delete this profile? This action cannot be undone.')) {
+                alert(`Profile ${profileId} has been deleted.`);
+                // Update UI
+                loadProfilesTable();
+            }
+        }
+
+        function exportUsers() {
+            alert('Exporting user data to CSV...');
+        }
+
+        function exportProfiles() {
+            alert('Exporting profile data to CSV...');
+        }
+
+        function bulkApprove() {
+            const checkedBoxes = document.querySelectorAll('.profile-checkbox:checked');
+            if (checkedBoxes.length === 0) {
+                alert('Please select at least one profile to approve.');
+                return;
+            }
+            
+            if (confirm(`Are you sure you want to approve ${checkedBoxes.length} selected profiles?`)) {
+                alert(`${checkedBoxes.length} profiles have been approved.`);
+                // Update UI
+                loadProfilesTable();
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userType');
+            localStorage.removeItem('userName');
+            localStorage.removeItem('userEmail');
+            
+            window.location.href = 'login.html';
+        }
+
+        // Mobile menu toggle
+        document.getElementById('mobileMenuBtn').addEventListener('click', function() {
+            document.getElementById('mobileMenu').classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

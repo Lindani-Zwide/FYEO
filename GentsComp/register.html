@@ -1,0 +1,970 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Gentlemen's Companion</title>
+    <meta name="description" content="Join South Africa's premier male escort directory. Register as a companion or client today.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Inter:wght@300;400;500;600&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+    
+    <style>
+        :root {
+            --primary-dark: #1a1a1a;
+            --secondary-gold: #d4af37;
+            --accent-burgundy: #722f37;
+            --neutral-cream: #f8f6f0;
+            --soft-gray: #8a8a8a;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: var(--neutral-cream);
+            line-height: 1.6;
+        }
+        
+        .font-display { font-family: 'Playfair Display', serif; }
+        .font-accent { font-family: 'Crimson Text', serif; }
+        
+        .glass-nav {
+            backdrop-filter: blur(20px);
+            background: rgba(26, 26, 26, 0.9);
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary-gold), #b8941f);
+            color: var(--primary-dark);
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #b8941f, var(--secondary-gold));
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.3);
+        }
+        
+        .btn-secondary {
+            border: 2px solid var(--secondary-gold);
+            color: var(--secondary-gold);
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-secondary:hover {
+            background: var(--secondary-gold);
+            color: var(--primary-dark);
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, var(--secondary-gold), var(--accent-burgundy));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .register-card {
+            background: rgba(45, 45, 45, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            border-radius: 16px;
+        }
+        
+        .membership-card {
+            background: rgba(45, 45, 45, 0.8);
+            border: 2px solid rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .membership-card:hover {
+            border-color: var(--secondary-gold);
+            transform: translateY(-4px);
+            box-shadow: 0 10px 25px rgba(212, 175, 55, 0.2);
+        }
+        
+        .membership-card.selected {
+            border-color: var(--secondary-gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .membership-card.featured {
+            border-color: var(--accent-burgundy);
+            background: rgba(114, 47, 55, 0.1);
+        }
+        
+        .form-input {
+            background: rgba(45, 45, 45, 0.8);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            color: var(--neutral-cream);
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            border-color: var(--secondary-gold);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+            outline: none;
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--secondary-gold);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary-gold);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-menu.active {
+            transform: translateX(0);
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--secondary-gold);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .file-upload {
+            border: 2px dashed rgba(212, 175, 55, 0.3);
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .file-upload:hover {
+            border-color: var(--secondary-gold);
+            background: rgba(212, 175, 55, 0.05);
+        }
+        
+        .file-upload.dragover {
+            border-color: var(--secondary-gold);
+            background: rgba(212, 175, 55, 0.1);
+        }
+        
+        .password-strength {
+            height: 4px;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+        
+        .password-strength.weak {
+            background: #ef4444;
+            width: 33%;
+        }
+        
+        .password-strength.medium {
+            background: #f59e0b;
+            width: 66%;
+        }
+        
+        .password-strength.strong {
+            background: #10b981;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="glass-nav fixed w-full top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex-shrink-0">
+                    <a href="index.html" class="font-display text-2xl font-bold text-gradient">Gentlemen's Companion</a>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-8">
+                        <a href="index.html" class="nav-link text-gray-300 hover:text-yellow-500 px-3 py-2 text-sm font-medium">Home</a>
+                        <a href="index.html#escorts" class="nav-link text-gray-300 hover:text-yellow-500 px-3 py-2 text-sm font-medium">Escorts</a>
+                        <a href="login.html" class="nav-link text-gray-300 hover:text-yellow-500 px-3 py-2 text-sm font-medium">Login</a>
+                        <a href="index.html#about" class="nav-link text-gray-300 hover:text-yellow-500 px-3 py-2 text-sm font-medium">About</a>
+                    </div>
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button id="mobileMenuBtn" class="text-gray-300 hover:text-yellow-500 focus:outline-none">
+                        <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div id="mobileMenu" class="mobile-menu md:hidden fixed top-16 right-0 w-64 h-screen bg-gray-900 border-l border-yellow-500/20">
+            <div class="px-2 pt-2 pb-3 space-y-1">
+                <a href="index.html" class="block px-3 py-2 text-gray-300 hover:text-yellow-500">Home</a>
+                <a href="index.html#escorts" class="block px-3 py-2 text-gray-300 hover:text-yellow-500">Escorts</a>
+                <a href="login.html" class="block px-3 py-2 text-gray-300 hover:text-yellow-500">Login</a>
+                <a href="index.html#about" class="block px-3 py-2 text-gray-300 hover:text-yellow-500">About</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Registration Header -->
+    <section class="pt-24 pb-12 bg-gradient-to-r from-gray-900 to-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 class="font-display text-4xl md:text-6xl font-bold mb-6 text-gradient">Join Our Community</h1>
+            <p class="text-xl text-gray-300 max-w-3xl mx-auto">
+                Become part of South Africa's most sophisticated companion directory. Choose your membership type and start connecting today.
+            </p>
+        </div>
+    </section>
+
+    <!-- Registration Type Selection -->
+    <section class="py-16">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="register-card p-8 mb-12">
+                <h2 class="font-display text-3xl font-bold text-center mb-8 text-gradient">Choose Your Registration Type</h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <!-- Client Registration -->
+                    <div id="clientCard" class="registration-type-card cursor-pointer border-2 border-gray-600 rounded-xl p-6 hover:border-yellow-500 transition-colors">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-gray-900" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+                                </svg>
+                            </div>
+                            <h3 class="font-display text-2xl font-semibold mb-4 text-white">Client Registration</h3>
+                            <p class="text-gray-300 mb-6">Looking for sophisticated companionship? Join as a client to browse and connect with our verified gentlemen.</p>
+                            <div class="text-left space-y-2 mb-6">
+                                <div class="flex items-center text-gray-300">
+                                    <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Free Registration
+                                </div>
+                                <div class="flex items-center text-gray-300">
+                                    <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Browse All Profiles
+                                </div>
+                                <div class="flex items-center text-gray-300">
+                                    <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Secure Messaging
+                                </div>
+                                <div class="flex items-center text-gray-300">
+                                    <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Privacy Protected
+                                </div>
+                            </div>
+                            <button class="w-full btn-primary py-3 px-6 rounded-lg font-semibold" onclick="selectRegistrationType('client')">
+                                Register as Client
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Escort Registration -->
+                    <div id="escortCard" class="registration-type-card cursor-pointer border-2 border-gray-600 rounded-xl p-6 hover:border-yellow-500 transition-colors">
+                        <div class="text-center">
+                            <div class="w-16 h-16 bg-gradient-to-r from-yellow-500 to-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                                <svg class="w-8 h-8 text-gray-900" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="font-display text-2xl font-semibold mb-4 text-white">Companion Registration</h3>
+                            <p class="text-gray-300 mb-6">Professional gentleman? Join as a companion to showcase your services and connect with discerning clients.</p>
+                            <div class="text-left space-y-2 mb-6">
+                                <div class="flex items-center text-gray-300">
+                                    <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Premium Memberships
+                                </div>
+                                <div class="flex items-center text-gray-300">
+                                    <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Profile Verification
+                                </div>
+                                <div class="flex items-center text-gray-300">
+                                    <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Direct Client Contact
+                                </div>
+                                <div class="flex items-center text-gray-300">
+                                    <svg class="w-5 h-5 text-green-500 mr-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                    </svg>
+                                    Analytics & Insights
+                                </div>
+                            </div>
+                            <button class="w-full btn-primary py-3 px-6 rounded-lg font-semibold" onclick="selectRegistrationType('escort')">
+                                Register as Companion
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Registration Forms -->
+    <section id="registrationForms" class="py-16 hidden">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Client Registration Form -->
+            <div id="clientForm" class="register-card p-8 hidden">
+                <h2 class="font-display text-3xl font-bold text-center mb-8 text-gradient">Client Registration</h2>
+                <form id="clientRegistrationForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">First Name *</label>
+                            <input type="text" name="firstName" required class="form-input w-full px-4 py-3 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Last Name *</label>
+                            <input type="text" name="lastName" required class="form-input w-full px-4 py-3 rounded-lg">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Email Address *</label>
+                        <input type="email" name="email" required class="form-input w-full px-4 py-3 rounded-lg">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Phone Number</label>
+                        <input type="tel" name="phone" class="form-input w-full px-4 py-3 rounded-lg">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Location *</label>
+                        <select name="location" required class="form-input w-full px-4 py-3 rounded-lg">
+                            <option value="">Select your location</option>
+                            <option value="stellenbosch">Stellenbosch</option>
+                            <option value="kayamandi">Kayamandi</option>
+                            <option value="thubelitsha">Thubelitsha</option>
+                            <option value="kayelitsha">Kayelitsha</option>
+                            <option value="delft">Delft</option>
+                            <option value="blue-downs">Blue Downs</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Password *</label>
+                        <input type="password" name="password" required class="form-input w-full px-4 py-3 rounded-lg" id="clientPassword">
+                        <div class="mt-2">
+                            <div class="password-strength w-0" id="clientPasswordStrength"></div>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">Password must be at least 8 characters long</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Confirm Password *</label>
+                        <input type="password" name="confirmPassword" required class="form-input w-full px-4 py-3 rounded-lg">
+                    </div>
+                    
+                    <div class="flex items-start space-x-3">
+                        <input type="checkbox" name="terms" required class="mt-1">
+                        <label class="text-sm text-gray-300">
+                            I agree to the <a href="#" class="text-yellow-500 hover:underline">Terms of Service</a> and 
+                            <a href="#" class="text-yellow-500 hover:underline">Privacy Policy</a>. I understand this platform is for adults 18+ only.
+                        </label>
+                    </div>
+                    
+                    <div class="flex space-x-4">
+                        <button type="button" class="flex-1 btn-secondary py-3 px-6 rounded-lg font-semibold" onclick="goBackToSelection()">
+                            Back
+                        </button>
+                        <button type="submit" class="flex-1 btn-primary py-3 px-6 rounded-lg font-semibold">
+                            Register as Client
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Escort Registration Form -->
+            <div id="escortForm" class="register-card p-8 hidden">
+                <h2 class="font-display text-3xl font-bold text-center mb-8 text-gradient">Companion Registration</h2>
+                
+                <!-- Membership Selection -->
+                <div class="mb-8">
+                    <h3 class="font-display text-2xl font-semibold mb-6 text-center">Choose Your Membership Plan</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <!-- Basic Plan -->
+                        <div class="membership-card p-6" data-plan="basic" onclick="selectMembershipPlan('basic')">
+                            <div class="text-center">
+                                <h4 class="font-display text-xl font-semibold mb-2 text-white">Basic</h4>
+                                <div class="text-3xl font-bold text-gradient mb-4">R500<span class="text-sm text-gray-400">/month</span></div>
+                                <ul class="text-sm text-gray-300 space-y-2 mb-6">
+                                    <li>✓ Profile Listing</li>
+                                    <li>✓ 5 Photos</li>
+                                    <li>✓ Contact Display</li>
+                                    <li>✓ Message Responses</li>
+                                    <li>✓ Basic Analytics</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- Premium Plan -->
+                        <div class="membership-card featured p-6" data-plan="premium" onclick="selectMembershipPlan('premium')">
+                            <div class="text-center">
+                                <div class="bg-red-800 text-white text-xs px-2 py-1 rounded-full mb-2 inline-block">Most Popular</div>
+                                <h4 class="font-display text-xl font-semibold mb-2 text-white">Premium</h4>
+                                <div class="text-3xl font-bold text-gradient mb-4">R1000<span class="text-sm text-gray-400">/month</span></div>
+                                <ul class="text-sm text-gray-300 space-y-2 mb-6">
+                                    <li>✓ Everything in Basic</li>
+                                    <li>✓ Featured Profile</li>
+                                    <li>✓ Unlimited Photos</li>
+                                    <li>✓ Priority Approval</li>
+                                    <li>✓ Advanced Analytics</li>
+                                    <li>✓ "Available Now" Badge</li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <!-- VIP Plan -->
+                        <div class="membership-card p-6" data-plan="vip" onclick="selectMembershipPlan('vip')">
+                            <div class="text-center">
+                                <h4 class="font-display text-xl font-semibold mb-2 text-white">VIP</h4>
+                                <div class="text-3xl font-bold text-gradient mb-4">R2000<span class="text-sm text-gray-400">/month</span></div>
+                                <ul class="text-sm text-gray-300 space-y-2 mb-6">
+                                    <li>✓ Everything in Premium</li>
+                                    <li>✓ Top Search Placement</li>
+                                    <li>✓ Verified Badge</li>
+                                    <li>✓ Priority Support</li>
+                                    <li>✓ Custom Profile Design</li>
+                                    <li>✓ Blog Feature</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <form id="escortRegistrationForm" class="space-y-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Professional Name *</label>
+                            <input type="text" name="professionalName" required class="form-input w-full px-4 py-3 rounded-lg" placeholder="Your professional name">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Age *</label>
+                            <input type="number" name="age" min="18" max="60" required class="form-input w-full px-4 py-3 rounded-lg">
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Email Address *</label>
+                            <input type="email" name="email" required class="form-input w-full px-4 py-3 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Phone Number *</label>
+                            <input type="tel" name="phone" required class="form-input w-full px-4 py-3 rounded-lg">
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Location *</label>
+                            <select name="location" required class="form-input w-full px-4 py-3 rounded-lg">
+                                <option value="">Select your primary location</option>
+                                <option value="stellenbosch">Stellenbosch</option>
+                                <option value="kayamandi">Kayamandi</option>
+                                <option value="thubelitsha">Thubelitsha</option>
+                                <option value="kayelitsha">Kayelitsha</option>
+                                <option value="delft">Delft</option>
+                                <option value="blue-downs">Blue Downs</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Hourly Rate (R) *</label>
+                            <input type="number" name="hourlyRate" min="500" max="5000" required class="form-input w-full px-4 py-3 rounded-lg" placeholder="e.g., 1200">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">About You *</label>
+                        <textarea name="bio" rows="4" required class="form-input w-full px-4 py-3 rounded-lg" placeholder="Tell potential clients about yourself, your interests, and what makes you unique..."></textarea>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Services Offered *</label>
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-2">
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="services" value="dinner" class="text-yellow-500">
+                                <span class="text-gray-300">Dinner Dates</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="services" value="events" class="text-yellow-500">
+                                <span class="text-gray-300">Event Escort</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="services" value="travel" class="text-yellow-500">
+                                <span class="text-gray-300">Travel Companion</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="services" value="massage" class="text-yellow-500">
+                                <span class="text-gray-300">Massage</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="services" value="companion" class="text-yellow-500">
+                                <span class="text-gray-300">Companionship</span>
+                            </label>
+                            <label class="flex items-center space-x-2">
+                                <input type="checkbox" name="services" value="fitness" class="text-yellow-500">
+                                <span class="text-gray-300">Fitness Partner</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Height</label>
+                            <input type="text" name="height" placeholder="e.g., 6'1\"" class="form-input w-full px-4 py-3 rounded-lg">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Ethnicity</label>
+                            <select name="ethnicity" class="form-input w-full px-4 py-3 rounded-lg">
+                                <option value="">Select ethnicity</option>
+                                <option value="African">African</option>
+                                <option value="Caucasian">Caucasian</option>
+                                <option value="Indian">Indian</option>
+                                <option value="Mixed">Mixed</option>
+                                <option value="Middle Eastern">Middle Eastern</option>
+                                <option value="Asian">Asian</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-300 mb-2">Body Type</label>
+                            <select name="bodyType" class="form-input w-full px-4 py-3 rounded-lg">
+                                <option value="">Select body type</option>
+                                <option value="Slim">Slim</option>
+                                <option value="Athletic">Athletic</option>
+                                <option value="Muscular">Muscular</option>
+                                <option value="Average">Average</option>
+                                <option value="Stocky">Stocky</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Languages Spoken</label>
+                        <input type="text" name="languages" placeholder="e.g., English, Afrikaans, Xhosa" class="form-input w-full px-4 py-3 rounded-lg">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Profile Photos</label>
+                        <div class="file-upload" id="photoUpload">
+                            <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                            <p class="text-gray-300 mb-2">Click to upload or drag and drop</p>
+                            <p class="text-gray-400 text-sm">Upload 3-5 professional photos (JPG, PNG up to 5MB each)</p>
+                            <input type="file" name="photos" multiple accept="image/*" class="hidden" id="photoInput">
+                        </div>
+                        <div id="photoPreview" class="mt-4 grid grid-cols-3 gap-2 hidden">
+                            <!-- Photo previews will appear here -->
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Password *</label>
+                        <input type="password" name="password" required class="form-input w-full px-4 py-3 rounded-lg" id="escortPassword">
+                        <div class="mt-2">
+                            <div class="password-strength w-0" id="escortPasswordStrength"></div>
+                        </div>
+                        <p class="text-xs text-gray-400 mt-1">Password must be at least 8 characters long</p>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-300 mb-2">Confirm Password *</label>
+                        <input type="password" name="confirmPassword" required class="form-input w-full px-4 py-3 rounded-lg">
+                    </div>
+                    
+                    <div class="flex items-start space-x-3">
+                        <input type="checkbox" name="terms" required class="mt-1">
+                        <label class="text-sm text-gray-300">
+                            I agree to the <a href="#" class="text-yellow-500 hover:underline">Terms of Service</a>, 
+                            <a href="#" class="text-yellow-500 hover:underline">Privacy Policy</a>, and 
+                            <a href="#" class="text-yellow-500 hover:underline">Companion Guidelines</a>. I understand I am over 18 and will provide professional services only.
+                        </label>
+                    </div>
+                    
+                    <div class="flex space-x-4">
+                        <button type="button" class="flex-1 btn-secondary py-3 px-6 rounded-lg font-semibold" onclick="goBackToSelection()">
+                            Back
+                        </button>
+                        <button type="submit" class="flex-1 btn-primary py-3 px-6 rounded-lg font-semibold">
+                            Register as Companion
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 border-t border-yellow-500/20 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center">
+                <h3 class="font-display text-2xl font-bold text-gradient mb-4">Gentlemen's Companion</h3>
+                <p class="text-gray-400 mb-6 max-w-2xl mx-auto">
+                    South Africa's premier directory of sophisticated male companions. Connecting discerning women with verified professionals since 2020.
+                </p>
+                
+                <div class="border-t border-gray-700 pt-6">
+                    <p class="text-gray-500 text-sm">
+                        © 2025 Gentlemen's Companion. All rights reserved. | 
+                        <span class="text-yellow-500">This platform is intended for adults 18+ only.</span> | 
+                        <a href="#" class="text-gray-400 hover:text-yellow-500">Privacy Policy</a> | 
+                        <a href="#" class="text-gray-400 hover:text-yellow-500">Terms of Service</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let selectedRegistrationType = null;
+        let selectedMembershipPlan = null;
+
+        // Initialize registration page
+        document.addEventListener('DOMContentLoaded', function() {
+            setupEventListeners();
+            initializeMobileMenu();
+        });
+
+        function setupEventListeners() {
+            // Registration type cards
+            document.getElementById('clientCard').addEventListener('click', () => selectRegistrationType('client'));
+            document.getElementById('escortCard').addEventListener('click', () => selectRegistrationType('escort'));
+            
+            // Form submissions
+            document.getElementById('clientRegistrationForm').addEventListener('submit', handleClientRegistration);
+            document.getElementById('escortRegistrationForm').addEventListener('submit', handleEscortRegistration);
+            
+            // Password strength indicators
+            document.getElementById('clientPassword').addEventListener('input', (e) => checkPasswordStrength(e.target.value, 'clientPasswordStrength'));
+            document.getElementById('escortPassword').addEventListener('input', (e) => checkPasswordStrength(e.target.value, 'escortPasswordStrength'));
+            
+            // Photo upload
+            document.getElementById('photoUpload').addEventListener('click', () => document.getElementById('photoInput').click());
+            document.getElementById('photoInput').addEventListener('change', handlePhotoUpload);
+            
+            // Drag and drop for photos
+            setupDragAndDrop();
+        }
+
+        function selectRegistrationType(type) {
+            selectedRegistrationType = type;
+            
+            // Hide type selection
+            document.querySelector('section:nth-of-type(2)').classList.add('hidden');
+            
+            // Show registration forms section
+            document.getElementById('registrationForms').classList.remove('hidden');
+            
+            // Show appropriate form
+            if (type === 'client') {
+                document.getElementById('clientForm').classList.remove('hidden');
+                document.getElementById('escortForm').classList.add('hidden');
+            } else {
+                document.getElementById('escortForm').classList.remove('hidden');
+                document.getElementById('clientForm').classList.add('hidden');
+            }
+            
+            // Scroll to forms
+            document.getElementById('registrationForms').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function selectMembershipPlan(plan) {
+            selectedMembershipPlan = plan;
+            
+            // Update visual selection
+            document.querySelectorAll('.membership-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+            document.querySelector(`[data-plan="${plan}"]`).classList.add('selected');
+        }
+
+        function goBackToSelection() {
+            // Hide forms
+            document.getElementById('registrationForms').classList.add('hidden');
+            
+            // Show type selection
+            document.querySelector('section:nth-of-type(2)').classList.remove('hidden');
+            
+            // Reset selections
+            selectedRegistrationType = null;
+            selectedMembershipPlan = null;
+            
+            // Scroll to top
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleClientRegistration(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const password = formData.get('password');
+            const confirmPassword = formData.get('confirmPassword');
+            
+            // Validation
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            if (!formData.get('terms')) {
+                alert('Please accept the terms and conditions.');
+                return;
+            }
+            
+            // Simulate registration
+            simulateRegistration('client', formData);
+        }
+
+        function handleEscortRegistration(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const password = formData.get('password');
+            const confirmPassword = formData.get('confirmPassword');
+            
+            // Validation
+            if (!selectedMembershipPlan) {
+                alert('Please select a membership plan.');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                alert('Passwords do not match!');
+                return;
+            }
+            
+            if (!formData.get('terms')) {
+                alert('Please accept the terms and conditions.');
+                return;
+            }
+            
+            // Check if services are selected
+            const services = formData.getAll('services');
+            if (services.length === 0) {
+                alert('Please select at least one service.');
+                return;
+            }
+            
+            // Simulate registration
+            simulateRegistration('escort', formData);
+        }
+
+        function simulateRegistration(type, formData) {
+            // Show loading state
+            const submitBtn = document.querySelector(`#${type}Form button[type="submit"]`);
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = 'Processing...';
+            submitBtn.disabled = true;
+            
+            // Simulate API call
+            setTimeout(() => {
+                // Reset button
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                
+                // Show success message
+                if (type === 'client') {
+                    alert('Registration successful! Welcome to Gentlemen\'s Companion.\\n\\nYou can now browse profiles and connect with our verified companions.');
+                } else {
+                    const planName = selectedMembershipPlan.charAt(0).toUpperCase() + selectedMembershipPlan.slice(1);
+                    alert(`Registration successful! Welcome to Gentlemen\'s Companion.\\n\\nYour ${planName} membership is being processed. You will receive an email with payment instructions and profile setup details within 24 hours.`);
+                }
+                
+                // Redirect to login
+                window.location.href = 'login.html';
+            }, 2000);
+        }
+
+        function checkPasswordStrength(password, strengthElementId) {
+            const strengthElement = document.getElementById(strengthElementId);
+            let strength = 0;
+            
+            if (password.length >= 8) strength++;
+            if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            strengthElement.className = 'password-strength ';
+            if (strength < 2) {
+                strengthElement.className += 'weak';
+            } else if (strength < 3) {
+                strengthElement.className += 'medium';
+            } else {
+                strengthElement.className += 'strong';
+            }
+        }
+
+        function handlePhotoUpload(e) {
+            const files = Array.from(e.target.files);
+            const preview = document.getElementById('photoPreview');
+            
+            if (files.length > 0) {
+                preview.classList.remove('hidden');
+                preview.innerHTML = '';
+                
+                files.forEach((file, index) => {
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            const img = document.createElement('div');
+                            img.className = 'relative';
+                            img.innerHTML = `
+                                <img src="${e.target.result}" alt="Photo ${index + 1}" class="w-full h-24 object-cover rounded-lg">
+                                <button type="button" class="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 text-xs" onclick="removePhoto(this)">×</button>
+                            `;
+                            preview.appendChild(img);
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+            }
+        }
+
+        function removePhoto(button) {
+            button.parentElement.remove();
+            const preview = document.getElementById('photoPreview');
+            if (preview.children.length === 0) {
+                preview.classList.add('hidden');
+            }
+        }
+
+        function setupDragAndDrop() {
+            const uploadArea = document.getElementById('photoUpload');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                uploadArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            uploadArea.addEventListener('drop', handleDrop, false);
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            function highlight(e) {
+                uploadArea.classList.add('dragover');
+            }
+            
+            function unhighlight(e) {
+                uploadArea.classList.remove('dragover');
+            }
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                document.getElementById('photoInput').files = files;
+                handlePhotoUpload({ target: { files: files } });
+            }
+        }
+
+        function initializeMobileMenu() {
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            const mobileMenu = document.getElementById('mobileMenu');
+            
+            mobileMenuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+            });
+            
+            // Close menu when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!mobileMenuBtn.contains(e.target) && !mobileMenu.contains(e.target)) {
+                    mobileMenu.classList.remove('active');
+                }
+            });
+        }
+    </script>
+</body>
+</html>
